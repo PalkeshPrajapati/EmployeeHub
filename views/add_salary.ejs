@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('components/head.ejs'); %>
+  <style>
+    .input_width {
+      width: 80px;
+    }
+
+    .changed {
+      background-color: #7da781;
+    }
+
+    #input_month {
+      width: 200px;
+    }
+
+    .blockAllInput {
+      background-color: #369e41;
+    }
+
+    .blockAllInput input:not(.addSalary, .deleteSalary) {
+      pointer-events: none;
+      background: #CCC;
+      color: #333;
+      border: 1px solid #666;
+    }
+  </style>
+</head>
+
+<body>
+
+  <% allEmployeeSalaries_length = allEmployeeSalaries.length %>
+  <%- include('components/navbar.ejs'); %>
+
+  <div class="container my-3">
+    <input id="input_month" type="month" class="form-control mb-3" onchange="date_change(this)">
+
+    <div class="container overflow-auto">
+
+      <% if (!error) { %>
+      <% if (allEmployeeSalaries_length > 0) { %>
+      <table id="dataTable" class="table table-striped mt-3 text-center table-bordered align-middle">
+
+        <thead class="table-light align-middle <%= sameSalaryData.isAnySalryIsSubmitted ? 'blockAllInput' : '' %>">
+
+          <tr>
+            <th colspan="4">Detail</th>
+            <th colspan="6">Earnings</th>
+            <th colspan="8">Deductions</th>
+          </tr>
+          <tr>
+            <th rowspan="2">S.no</th>
+            <th rowspan="2">Submit</th>
+            <th rowspan="2">Employee Name</th>
+            <th rowspan="2">Vender Id</th>
+            <th rowspan="2">Pay Basic</th>
+            <th rowspan="2">GP</th>
+
+            <th rowspan="2">
+              DA
+              <input id="da_p" class="text-center form-control form-control-sm input_width" value="<%= sameSalaryData.same_da %>" type="number" onchange="update_all_da();">
+            </th>
+
+            <th rowspan="2">HRA_E</th>
+
+            <th rowspan="2">
+              NPS_DS
+              <input id="nps_ds_p" class="text-center form-control form-control-sm input_width" value="<%= sameSalaryData.same_nps_ds %>" type="number" onchange="update_all_nps_ds()">
+            </th>
+
+            <th rowspan="2">Gross Amount</th>
+            <th rowspan="2">IT</th>
+            <th rowspan="2">PT</th>
+            <th rowspan="2">HRA_D</th>
+            <th rowspan="2">Other Recovery</th>
+            <th colspan="3">NPS</th>
+            <th rowspan="2">NET Payment</th>
+          </tr>
+          <tr>
+            <th>
+              NPS_ES
+              <input id="nps_es_p" class="text-center form-control form-control-sm input_width" value="<%= sameSalaryData.same_nps_es %>" type="number" onchange="update_all_nps_es();">
+            </th>
+            <th>NPS_DS</th>
+            <th>Total</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="main_table">
+          <% i = 1 %>
+          <% allEmployeeSalaries.forEach(employee => { %>
+          
+          <tr class="main_table_row <%= employee.issubmitted ? 'blockAllInput' : '' %>">
+            <td><%= i %></td>
+            <% if (employee.issubmitted) { %>
+              <td><input onclick="deleteSalary(this.parentElement.parentElement)" class="btn btn-danger deleteSalary" type="button" value="Delete"></td>
+              <% } else { %>
+              <td><input onclick="submitSalary(this.parentElement.parentElement)" class="btn btn-primary addSalary" type="button" value="Submit"></td>
+            <% } %>
+            <td class="employee_name"><%= employee.employee_name %></td>
+            <td class="vender_id"><%= employee.vender_id %></td>
+
+            <td>
+              <input class="text-center form-control form-control-sm input_width pb" type="number" value="<%= employee.pay_basic %>" onchange="update_da(this.parentElement.parentElement); update_hra_e(this.parentElement.parentElement);">
+            </td>
+
+            <td>
+              <input class="text-center form-control form-control-sm input_width gp" type="number" value="<%= employee.grade_pay %>" onchange="update_da(this.parentElement.parentElement); update_hra_e(this.parentElement.parentElement);">
+            </td>
+
+            <td class="da">
+              <input class="text-center form-control form-control-sm" type="number" value="<%= employee.dearness_allowance %>" onchange="update_da(this.parentElement.parentElement);">
+              0
+            </td>
+
+            <td class="hra_e">
+              <input class="text-center form-control form-control-sm" type="number" value="<%= employee.hra_earning %>" onchange="update_hra_e(this.parentElement.parentElement);">
+              0
+            </td>
+
+            <td class="nps_ds">
+              <input class="text-center form-control form-control-sm" type="number" value="<%= employee.nps_departmentshare %>" onchange="update_nps_ds(this.parentElement.parentElement);">
+              0
+            </td>
+
+            <td class="ga"></td>
+
+            <td>
+              <input class="text-center form-control form-control-sm input_width it" type="number" value="<%= employee.income_tax %>" onchange="update_net_payment(this.parentElement.parentElement);">
+            </td>
+
+            <td>
+              <input class="text-center form-control form-control-sm input_width pt" type="number" value="<%= employee.professional_tax %>" onchange="update_net_payment(this.parentElement.parentElement);">
+            </td>
+
+            <td>
+              <input class="text-center form-control form-control-sm input_width hra_d" type="number" value="<%= employee.hra_deduction %>" onchange="update_net_payment(this.parentElement.parentElement)">
+            </td>
+
+            <td>
+              <input class="text-center form-control form-control-sm input_width or" type="number" value="<%= employee.other_recovery %>" onchange="update_net_payment(this.parentElement.parentElement);">
+            </td>
+
+            <td class="nps_es">
+              <input class="text-center form-control form-control-sm" type="number" value="<%= employee.nps_employeeshare %>" onchange="update_nps_es(this.parentElement.parentElement);">
+              0
+            </td>
+            <td class="nps_ds_copy"></td>
+            <td class="nps_total"></td>
+            <td class="net_payment"></td>
+          </tr>
+          <% i += 1 %>
+          <% }); %>
+
+        </tbody>
+
+      </table>
+      <% } else { %>
+      <h2 class="mt-3">First <a href="/admin/add-employee">add</a> some employees to add their salary</h2>
+      <% } %>
+      <% } else { %>
+      <h4 class="mt-3">Sorry There are some error while featching Salary details</h4>
+      <small><%= error %></small>
+      <% } %>
+    </div>
+    <button class="btn btn-primary mt-3" onclick="submitAllSalary()">Submit All Salary</button>
+  </div>
+
+  <%- include('components/footer.ejs'); %>
+  <script src="/js/add_salary.js"></script>
+</body>
+
+</html>

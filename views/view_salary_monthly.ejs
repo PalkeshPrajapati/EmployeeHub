@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('components/head.ejs'); %>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+  <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+  
+  <style>
+    .input_width {
+      width: 80px;
+    }
+    .rs{
+      font-weight: bold;
+    }
+    table{
+
+      border: 3px solid black;
+    }
+  </style>
+</head>
+
+<body>
+
+  <% allEmployeeSalaries_length = allEmployeeSalaries.length %>
+  <%- include('components/navbar.ejs'); %>
+
+  <div class="container my-3">
+    <input id="input_month" type="month" style="max-width: 200px;" class="form-control mb-3" onchange="date_change(this)">
+
+    <div class="form-check form-switch mb-3">
+      <label class="form-check-label" for="HideEmployee">Hide Employee who's salary is not submitted</label>
+      <input class="form-check-input" type="checkbox" role="switch" id="HideEmployee" onclick="hide_employee_with_nosalary(this)" />
+    </div>
+
+    <div class="container overflow-auto">
+
+      <% if (!error) { %>
+      <% if (allEmployeeSalaries_length > 0) { %>
+      <table class="table table-striped mt-3 text-center table-bordered align-middle" id="dataTable">
+
+        <thead class="table-light align-middle">
+          <tr>
+            <th colspan="18" id="month_in_table"></th>
+          </tr>
+          <tr>
+            <th colspan="18">Office of the Principal. Ujjain Polytechnic College, Ujjain</th>
+          </tr>
+          <tr>
+            <th colspan="4">Detail</th>
+            <th colspan="6">Earnings</th>
+            <th colspan="8">Deductions</th>
+          </tr>
+          <tr>
+            <th rowspan="2">S.no</th>
+            <th rowspan="2">Employee Name</th>
+            <th rowspan="2">Vender Id</th>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Pay Basic</th>
+            <th rowspan="2">GP</th>
+
+            <th rowspan="2">
+              DA
+              (<span><%= sameSalaryData.same_da %></span>%)
+            </th>
+
+            <th rowspan="2">HRA_E</th>
+
+            <th rowspan="2">
+              NPS_DS
+              (<span><%= sameSalaryData.same_nps_ds %></span>%)
+            </th>
+
+            <th rowspan="2">Gross Amount</th>
+            <th rowspan="2">IT</th>
+            <th rowspan="2">PT</th>
+            <th rowspan="2">HRA_D</th>
+            <th rowspan="2">Other Recovery</th>
+            <th colspan="3">NPS</th>
+            <th rowspan="2">NET Payment</th>
+          </tr>
+          <tr>
+            <th>
+              NPS_ES
+              (<span><%= sameSalaryData.same_nps_es %></span>%)
+            </th>
+            <th>NPS_DS</th>
+            <th>Total</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="main_table">
+          <% i = 1 %>
+          <% allEmployeeSalaries.forEach(employee => { %>
+          
+          <% if(employee.issubmitted == true) { %>
+          <tr class="main_table_row">
+            <td><%= i %></td>
+            <td class="employee_name"><%= employee.employee_name %></td>
+            <td class="vender_id"><%= employee.vender_id %></td>
+            <td><%= employee.date_created.toLocaleDateString() %></td>
+
+            <td class="pb"><%= employee.pay_basic %><span>Rs</span></td>
+
+            <td class="gp"><%= employee.grade_pay %><span>Rs</span></td>
+
+            <td class="da">
+              (<span class="pct"><%= employee.dearness_allowance %></span>%)
+              <span class="rs"></span>Rs
+            </td>
+
+            <td class="hra_e">
+              (<span class="pct"><%= employee.hra_earning %></span>%)
+              <span class="rs"></span>Rs
+            </td>
+
+            <td class="nps_ds">
+              (<span class="pct"><%= employee.nps_departmentshare %></span>%)
+              <span class="rs"></span>Rs
+            </td>
+
+            <td class="ga"><span></span>Rs</td>
+
+            <td class="it"><%= employee.income_tax %><span>Rs</span></td>
+
+            <td class="pt"><%= employee.professional_tax %><span>Rs</span></td>
+
+            <td class="hra_d"><%= employee.hra_deduction %><span>Rs</span></td>
+
+            <td class="or"><%= employee.other_recovery %><span>Rs</span></td>
+
+            <td class="nps_es">
+              (<span class="pct"><%= employee.nps_employeeshare %></span>%)
+              <span class="rs"></span>Rs
+            </td>
+
+            <td class="nps_ds">
+              (<span class="pct"><%= employee.nps_departmentshare %></span>%)
+              <span class="rs"></span>Rs
+            </td>
+
+            <td class="nps_total"><span></span>Rs</td>
+            <td class="net_payment"><span></span>Rs</td>
+          </tr>
+          <% } else { %>
+            <tr class="main_table_row">
+              <td><%= i %></td>
+              <td class="employee_name"><%= employee.employee_name %></td>
+              <td class="vender_id"><%= employee.vender_id %></td>
+              <td colspan="15" style="color: red; font-weight: bolder;">NOT SUBMITTED</td>
+            </tr>
+          <% } %>
+
+          <% i += 1 %>
+          <% }); %>
+
+        </tbody>
+
+      </table>
+      <button id="dwnldBtn" class="btn btn-primary mb-3" onclick="exportTableToExcel('dataTable', 'Employee_Salary')">
+        Excel Download
+      </button>
+      <% } else { %>
+      <h2 class="mt-3">First <a href="/admin/add-employee">add</a> some employees to add their salary</h2>
+      <% } %>
+      <% } else { %>
+      <h4 class="mt-3">Sorry There are some error while featching Salary details</h4>
+      <small><%= error %></small>
+      <% } %>
+    </div>
+
+  </div>
+
+  <%- include('components/footer.ejs'); %>
+  <script src="/js/view_salary_monthly.js"></script>
+  <script>
+    $(document).ready(function(){
+        $('#dataTable').dataTable({
+          "columnDefs": [{
+            "orderable": false,
+            "targets": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          }, 
+          { 
+            "defaultContent": "-", 
+            "targets": "_all" 
+          }], 
+      });
+    });
+  </script>
+</body>
+
+</html>

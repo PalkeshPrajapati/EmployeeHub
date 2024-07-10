@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('components/head.ejs'); %>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+        <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+    <%- include('components/navbar.ejs'); %>
+
+        <div class="container overflow-auto">
+            <h1>All employee here</h1>
+            <table id="employeeInfoTable" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">S.No</th>
+                        <th scope="col">VenderID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Date Created</th>
+                        <th>Full Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (var i=0; i < AllEmployeeInfos.length; i++) { %>
+                        <tr>
+                            <th scope="row">
+                                <%= i+1 %>
+                            </th>
+                            <td>
+                                <%= AllEmployeeInfos[i].vender_id %>
+                            </td>
+                            <td>
+                                <%= AllEmployeeInfos[i].employee_name %>
+                            </td>
+                            <td>
+                                <%= AllEmployeeInfos[i].date_created.toLocaleDateString() %>
+                            </td>
+                            <td><button class="btn btn-info"
+                                    onclick="employee_detail(`<%= AllEmployeeInfos[i].vender_id %>`)">Detail</button>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <%- include('components/footer.ejs'); %>
+            <script src="/js/view_all_employees.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $('#employeeInfoTable').dataTable({
+                        "columnDefs": [{
+                            "orderable": false,
+                            "targets": [3, 4]
+                        }]
+                    });
+                });
+            </script>
+</body>
+
+</html>

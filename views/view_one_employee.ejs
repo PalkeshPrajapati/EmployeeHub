@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('components/head.ejs'); %>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+  <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+  <style>
+    .input_width {
+      width: 80px;
+    }
+
+    .rs {
+      font-weight: bold;
+    }
+
+    table {
+      border: 3px solid black;
+    }
+  </style>
+</head>
+
+<body id="page-top">
+  <%- include('components/navbar.ejs'); %>
+
+  <div class="container mh-100 ">
+
+    <div class="dropdown position-absolute" style="top: 112px; right: 11px;">
+      <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <svg width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+          <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+        </svg>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-dark bg-dark">
+        <li><a class="dropdown-item" href="/admin/edit-employee?id=<%= employee.vender_id %>">Edit Information</a></li>
+        <li>
+          <hr class="dropdown-divider border-top border-secondary">
+        </li>
+        <li><a class="dropdown-item text-danger" style="cursor: pointer;" onclick="deleteEmloyee('<%= employee.vender_id %>')">Permanetly Delete Employee</a></li>
+      </ul>
+    </div>
+
+    <section class="my-4 py-4 px-2 rounded" style="background-color: rgb(199, 199, 199);">
+
+      <div class="mb-1 row g-1">
+        <div class="input-group col-md">
+          <p class="input-group-text">Vender ID</p>
+          <p class="form-control rounded-end text-break"><%= employee.vender_id %></p>
+        </div>
+        <div class="input-group col-md">
+          <p class="input-group-text rounded-start ms-1">Employee Name</p>
+          <p class="form-control text-break">
+            <%= employee.employee_name %>
+          </p>
+        </div>
+      </div>
+
+      <div class="mb-1 row g-1">
+        <div class="input-group col-md">
+          <p class="input-group-text">Father Name</p>
+          <p class="form-control rounded-end text-break"><%= employee.father_name %></p>
+        </div>
+        <div class="input-group col-md">
+          <p class="input-group-text rounded-start ms-1">+91</p>
+          <p class="form-control text-break"><%= employee.phone_no %></p>
+        </div>
+      </div>
+
+      <div class="input-group mb-1">
+        <p class="form-control text-break"><%= employee.email %></p>
+        <p class="input-group-text">@example.com</p>
+      </div>
+
+      <div class="mb-1 row g-1">
+        <div class="input-group col-md">
+          <p class="input-group-text">Aadhar Card No.</p>
+          <p class="form-control rounded-end text-break"><%= employee.aadharcard_no %></p>
+        </div>
+        <div class="input-group col-md">
+          <p class="input-group-text rounded-start ms-1">PAN Card No.</p>
+          <p class="form-control text-break"><%= employee.pancard_no %></p>
+        </div>
+      </div>
+
+      <div class="mb-1 row g-1">
+
+        <div class="input-group col-md">
+          <p class="input-group-text">DOB</p>
+          <p class="form-control rounded-end text-break"><%= employee.dob.toLocaleDateString() %></p>
+        </div>
+        <div class="input-group col-md">
+          <p class="input-group-text rounded-start ms-1">Date of Joining</p>
+          <p class="form-control rounded-end text-break"><%= employee.doj.toLocaleDateString() %></p>
+        </div>
+        <div class="input-group col-md">
+          <p class="input-group-text rounded-start ms-1">Gender</p>
+          <p class="form-control rounded-end text-break"><%= employee.gender %></p>
+        </div>
+      </div>
+
+      <div class="input-group mb-1">
+        <p class="input-group-text">Address</p>
+        <p class="form-control text-break"><%= employee.address %></p>
+      </div>
+
+      <div class="mb-1 row g-1">
+        <div class="input-group col-md">
+          <p class="input-group-text">Qualification</p>
+          <p class="form-control rounded-end text-break"><%= employee.qualification %></p>
+        </div>
+        <div class="input-group col-md">
+          <p class="input-group-text rounded-start ms-1">Branch</p>
+          <p class="form-control text-break"><%= employee.branch %></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+
+      <div>
+        <p class="fs-3 fw-bold">Salary:</p>
+        <div class="d-flex flex-wrap">
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <span class="fs-5 fw-bold me-2">From: </span>
+            <input id="from_month" type="month" class="form-control me-2">
+          </div>
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <span class="fs-5 fw-bold me-2">To: </span>
+            <input id="to_month" type="month" class="form-control me-2">
+          </div>
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <button id="search_from_to" class="btn btn-secondary" onclick="search(`<%= employee.vender_id %>`)">Search</button>
+          </div>
+        </div>
+      </div>
+      <div class="container my-3">
+
+        <div class="container overflow-auto">
+          <% salaries_length = salaries.length %>
+          <% if (!error) { %>
+          <% if (salaries_length > 0) { %>
+          <table class="table table-striped mt-3 text-center table-bordered align-middle blockAllInput" id="dataTable">
+
+            <thead class="table-light align-middle">
+
+              <tr>
+                <th colspan="3">Detail</th>
+                <th colspan="6">Earnings</th>
+                <th colspan="8">Deductions</th>
+              </tr>
+              <tr>
+                <th rowspan="2">S.no</th>
+                <th rowspan="2">Date</th>
+                <th rowspan="2">Salary of month</th>
+                <th rowspan="2">Pay Basic</th>
+                <th rowspan="2">GP</th>
+
+                <th rowspan="2">
+                  DA
+                </th>
+
+                <th rowspan="2">HRA_E</th>
+
+                <th rowspan="2">
+                  NPS_DS
+                </th>
+
+                <th rowspan="2">Gross Amount</th>
+                <th rowspan="2">IT</th>
+                <th rowspan="2">PT</th>
+                <th rowspan="2">HRA_D</th>
+                <th rowspan="2">Other Recovery</th>
+                <th colspan="3">NPS</th>
+                <th rowspan="2">NET Payment</th>
+              </tr>
+              <tr>
+                <th>
+                  NPS_ES
+                </th>
+                <th>NPS_DS</th>
+                <th>Total</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="main_table">
+              <% i = 1 %>
+              <% salaries.forEach(salary => { %>
+              <tr class="main_table_row">
+                <td><%= i %></td>
+
+                <td><%= salary.date_created.toLocaleDateString() %></td>
+
+                <td style="color: rgb(255, 0, 98); font-weight: bolder; text-wrap: nowrap;"><%= salary.year+'-'+salary.month %></td>
+
+                <td class="pb"><%= salary.pay_basic %><span>Rs</span></td>
+
+                <td class="gp"><%= salary.grade_pay %><span>Rs</span></td>
+
+                <td class="da">
+                  (<span class="pct"><%= salary.dearness_allowance %></span>%)
+                  <span class="rs"></span>Rs
+                </td>
+
+                <td class="hra_e">
+                  (<span class="pct"><%= salary.hra_earning %></span>%)
+                  <span class="rs"></span>Rs
+                </td>
+
+                <td class="nps_ds">
+                  (<span class="pct"><%= salary.nps_departmentshare %></span>%)
+                  <span class="rs"></span>Rs
+                </td>
+
+                <td class="ga"><span></span>Rs</td>
+
+                <td class="it"><%= salary.income_tax %><span>Rs</span></td>
+
+                <td class="pt"><%= salary.professional_tax %><span>Rs</span></td>
+
+                <td class="hra_d"><%= salary.hra_deduction %><span>Rs</span></td>
+
+                <td class="or"><%= salary.other_recovery %><span>Rs</span></td>
+
+                <td class="nps_es">
+                  (<span class="pct"><%= salary.nps_employeeshare %></span>%)
+                  <span class="rs"></span>Rs
+                </td>
+
+                <td class="nps_ds">
+                  (<span class="pct"><%= salary.nps_departmentshare %></span>%)
+                  <span class="rs"></span>Rs
+                </td>
+
+                <td class="nps_total"><span></span>Rs</td>
+                <td class="net_payment"><span></span>Rs</td>
+              </tr>
+              <% i += 1 %>
+              <% }); %>
+            </tbody>
+
+          </table>
+          <button id="dwnldBtn" class="btn btn-primary mb-3" onclick="exportTableToExcel('dataTable', 'Employee_Salary')">
+            Excel Download
+          </button>
+          <% } else { %>
+          <h2 class="mt-3">Salary not submitted yet!!</h2>
+          <% } %>
+          <% } else { %>
+          <h4 class="mt-3">Sorry There are some error while featching Salary details</h4>
+          <small><%= error %></small>
+          <% } %>
+        </div>
+
+      </div>
+    </section>
+  </div>
+  <%- include('components/footer.ejs'); %>
+  <script src="/js/view_one_employee.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#dataTable').dataTable({
+        "columnDefs": [{
+          "orderable": false,
+          "targets": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        }]
+      });
+    });
+  </script>
+</body>
+
+</html>

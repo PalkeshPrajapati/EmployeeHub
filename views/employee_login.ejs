@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('components/head.ejs'); %>
+        <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+
+    <div class="container-fluid ps-md-0">
+        <div class="row g-0">
+            <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+            <div class="col-md-8 col-lg-6">
+                <div class="login d-flex align-items-center py-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-9 col-lg-8 mx-auto">
+                                <h3 class="login-heading mb-4">Employee Login</h3>
+
+                                <!-- Sign In Form -->
+                                <form action="/employee/login" method="post">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="employee_id" name="employee_id"
+                                            placeholder="User ID">
+                                        <label for="employee_id">Employee ID</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="password" class="form-control" id="employee_pass" name="employee_pass"
+                                            placeholder="Password">
+                                        <label for="employee_pass">Password</label>
+                                    </div>
+
+                                    <div class="text-danger mb-3">
+                                        <% if (locals.messages.error) { %>
+                                            <%= locals.messages.error %>
+                                        <% } %>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2"
+                                            type="submit">Login</button>
+                                        <div class="text-center">
+                                            <a class="small" href="/">Go To Home</a>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

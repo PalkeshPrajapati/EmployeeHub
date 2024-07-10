@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('components/head.ejs'); %>
+    <link rel="stylesheet" href="/css/admin_dashboard.css">
+</head>
+
+<body>
+
+
+<%- include('components/navbar.ejs'); %>
+
+
+<div class="container py-3">
+    <header>
+        <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+            <h1 class="display-4 fw-normal">Admin Pannel</h1>
+            <p class="fs-5 text-muted">Manage Your Employee, and their salary very easily..!!</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="row d-flex justify-content-center align-items-center">
+
+            <%- include('components/admin_dashboard_card.ejs', {
+                img_src: "/assets/img/admin_dashboard_img/add_employee.png",
+                heading: "Add Employee", 
+                info: "You can add a new employee from here",
+                btn: "Add Employee",
+                btn_href: "add-employee"
+            }); %>
+
+            <%- include('components/admin_dashboard_card.ejs', {
+                img_src: "/assets/img/admin_dashboard_img/view_employees.png",
+                heading: "View Employes", 
+                info: "You can view the employes here",
+                btn: "View Employees",
+                btn_href: "view-all-employees"
+            }); %>
+
+            <%- include('components/admin_dashboard_card.ejs', {
+                img_src: "/assets/img/admin_dashboard_img/add_salary.png",
+                heading: "Add Salary", 
+                info: "You can add employee salary from here.",
+                btn: "Add",
+                btn_href: "add-salary"
+            }); %>
+
+            <%- include('components/admin_dashboard_card.ejs', {
+                img_src: "/assets/img/admin_dashboard_img/view_salary.jpg",
+                heading: "View Salary", 
+                info: "You can view employees salary from here.",
+                btn: "View",
+                btn_href: "view-salary-monthly"
+            }); %>
+            
+        </div>
+    </main>
+</div>
+
+<%- include('components/footer.ejs'); %>
+</body>
+
+</html>
